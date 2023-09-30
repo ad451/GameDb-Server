@@ -7,7 +7,7 @@ const favouriteSchema = mongoose.Schema(
       game: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "game",
+        ref: "Game",
       },
     },
 
