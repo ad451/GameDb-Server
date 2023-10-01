@@ -10,7 +10,9 @@ const replySchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    replies: [{type: mongoose.Schema.Types.ObjectId, ref: 'Reply'}],
+    // replies: [{type: mongoose.Schema.Types.ObjectId, ref: 'Reply'}],
+    // TODO: ensure that parentid is a valid document with the help of a middleware
+    parentId: {type: mongoose.Schema.Types.ObjectId, ref: 'Reply'},
     upvotes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     downvotes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
   },
