@@ -1,11 +1,12 @@
 const express = require("express");
-const colors = require("colors");
 const connectDB = require("./config/db.js");
 // Routes
 const gameRouter = require("./routes/gameRoutes.js");
 const userRouter = require("./routes/userRoutes.js");
 const favouriteRouter = require("./routes/favouriteRoutes.js");
 const replyRouter = require("./routes/replyRoutes.js");
+const reviewRouter = require("./routes/reviewRoutes.js");
+
 const { notFound, errorHandler } = require("./middleware/errorMiddleware.js");
 const path = require("path");
 const dotenv = require("dotenv");
@@ -24,6 +25,7 @@ app.use("/api/v1/games", gameRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/favourites", favouriteRouter);
 app.use("/api/v1/reply", replyRouter);
+app.use("/api/v1/review", reviewRouter);
 
 
 if (process.env.NODE_ENV === "production") {
