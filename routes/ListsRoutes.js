@@ -11,8 +11,8 @@ const {
 const { protect } = require("../middleware/authMiddleware.js");
 
 ListRouter.route("/createList").post(protect, createList);
-ListRouter.route("/:listId/addItems/").patch(protect, addListItem);
+ListRouter.route("/:listId/addItems").patch(protect, addListItem);
 ListRouter.route("/myListItems").get(protect, getMyListItems);
-ListRouter.route("/:id").delete(protect, deleteListItem);
+ListRouter.route("/:listId/deleteItems").patch(protect, deleteListItem);
 
 module.exports = ListRouter;

@@ -19,8 +19,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use(express.json());
-app.use("/api/v1/games", gameRouter);
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/Games", gameRouter);
+app.use("/api/v1/Users", userRouter);
 app.use("/api/v1/Lists", ListRouter);
 
 

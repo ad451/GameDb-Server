@@ -30,7 +30,7 @@ const ListSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Lists = mongoose.model("ListItems", ListSchema);
+const Lists = mongoose.model("Lists", ListSchema);
 
 
 

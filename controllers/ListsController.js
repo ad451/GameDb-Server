@@ -6,24 +6,24 @@ const Game = require("../models/gameModel.js");
 // @route   POST /api/favourites
 // @access  Private
 const createList = asyncHandler(async (req, res) => {
-   const {name, ListItems} = req.body
-   const Lists = await List.create({
-      name : name,
-      ListItems,
-      createdBy: req.user._id,
+  const { name, ListItems } = req.body
+  const Lists = await List.create({
+    name: name,
+    ListItems,
+    createdBy: req.user._id,
+  });
+  if (Lists) {
+    res.status(201).json({
+      _id: Lists._id,
+      name: Lists.name,
+      createdBy: Lists.createdBym,
+      visibility: Lists.visibility,
+      ListItems: Lists.ListItems
     });
-    if (Lists) {
-      res.status(201).json({
-        _id: Lists._id,
-        name: Lists.name,
-        createdBy : Lists.createdBym,
-        visibility: Lists.visibility,
-        ListItems : Lists.ListItems
-      });
-    } else {
-      res.status(400);
-      throw new Error("Invalid List data");
-    }
+  } else {
+    res.status(400);
+    throw new Error("Invalid List data");
+  }
 });
 
 
@@ -31,8 +31,8 @@ const createList = asyncHandler(async (req, res) => {
 const addListItem = asyncHandler(async (req, res) => {
   const { ListItem } = req.body;
 
-  const  list = await List.findById(req.params.listId);
-  if (list){
+  const list = await List.findById(req.params.listId);
+  if (list) {
     list.ListItems.push(ListItem)
 
 
@@ -40,7 +40,7 @@ const addListItem = asyncHandler(async (req, res) => {
     if (createdItem) {
       res.status(201).json(createdItem);
     }
-    else{
+    else {
       res.status(400);
       throw new Error("Invalid List Item data");
     }
@@ -54,15 +54,35 @@ const getMyListItems = asyncHandler(async (req, res) => {
 });
 
 const deleteListItem = asyncHandler(async (req, res) => {
-  const Item = await List.findById(req.params.id);
+  const { ListItem } = req.body;
+
+  const Item = await List.findById(req.params.listId);
 
   if (Item) {
-    await Item.remove();
-    res.json({ message: "game removed" });
+    const ItemList = Item.ListItems
+    try {
+
+      ItemList.forEach((Item, index) => {
+        if (Item == ListItem) {
+          ItemList.splice(index, 1);
+        }
+      });
+
+      const deletedItem = await Item.save();
+      if(deletedItem){
+        res.json({ message: "game removed" });
+      }
+
+
+    }
+    catch (error) {
+      res.json({ message: "game not found" });
+
+    }
   } else {
     res.status(404);
-    throw new Error("game not found");
+    throw new Error("List not found");
   }
 });
 
-module.exports = { addListItem, getMyListItems, deleteListItem , createList};
+module.exports = { addListItem, getMyListItems, deleteListItem, createList };
