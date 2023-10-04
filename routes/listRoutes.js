@@ -13,10 +13,10 @@ const List = require("../models/listModel");
 
 const listRouter = express.Router();
 
-listRouter.route("/").post(protect, createList).get(protect, getLists);
+listRouter.route("/").post(protect, createList).get(getLists);
+listRouter.route("/:id/").get(getListById);
 listRouter
-  .route("/:id/")
-  .get(getListById)
+  .route("/:id/items")
   .patch(protect, verifyCreator(List), addListItem)
   .delete(protect, verifyCreator(List), deleteListItem);
 

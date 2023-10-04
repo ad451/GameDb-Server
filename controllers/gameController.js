@@ -3,7 +3,6 @@ const getAllGames = async (req, res) => {
   const pageSize = 12;
   const page = Number(req.query.pageNumber) || 1;
   try {
-    console.log("Request has been made")
     const count = await Game.countDocuments();
 
     const games = await Game.find()

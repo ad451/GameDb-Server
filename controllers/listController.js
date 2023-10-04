@@ -27,7 +27,7 @@ const addListItem = asyncHandler(async (req, res) => {
   // TODO: what if array of items?
   // TODO: if item exists then return null
   const list = await List.findById(req.params.id);
-  console.log("here", list)
+
   if (list) {
     list.items.push(item);
 
@@ -42,27 +42,27 @@ const addListItem = asyncHandler(async (req, res) => {
 });
 
 const getLists = asyncHandler(async (req, res) => {
-  const { userId } = req.query;
+  const { createdBy } = req.query;
 
   let filter = { visibility: "PUBLIC" };
-  if (contentId !== undefined) {
-    filter.userId = userId;
+  if (createdBy !== undefined) {
+    filter.createdBy = createdBy;
   }
 
-  const lists = await List.find({ filter });
+  const lists = await List.find(filter);
   res.json(lists);
 });
 
 const getListById = asyncHandler(async (req, res) => {
   // TODO: check if user is creator, if not and if private, throw error
-  const list = await List.findById(req.params.listId);
+  const list = await List.findById(req.params.id);
   res.json(list);
 });
 
 const deleteListItem = asyncHandler(async (req, res) => {
   const { item } = req.body;
 
-  const list = await List.findById(req.params.listId);
+  const list = await List.findById(req.params.id);
 
   if (list) {
     const items = list.items;
