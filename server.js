@@ -3,12 +3,11 @@ const connectDB = require("./config/db.js");
 // Routes
 const gameRouter = require("./routes/gameRoutes.js");
 const userRouter = require("./routes/userRoutes.js");
-const ListRouter = require("./routes/ListsRoutes.js");
+const listRouter = require("./routes/listRoutes.js");
 const replyRouter = require("./routes/replyRoutes.js");
 const reviewRouter = require("./routes/reviewRoutes.js");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware.js");
-const path = require("path");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 
@@ -23,7 +22,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.json());
 app.use("/api/v1/Games", gameRouter);
 app.use("/api/v1/Users", userRouter);
-app.use("/api/v1/Lists", ListRouter);
+app.use("/api/v1/Lists", listRouter);
 app.use("/api/v1/Reply", replyRouter);
 app.use("/api/v1/Review", reviewRouter);
 
