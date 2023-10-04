@@ -6,20 +6,15 @@ const Game = require("../models/gameModel.js");
 // @route   POST /api/favourites
 // @access  Private
 const createList = asyncHandler(async (req, res) => {
-  const { name, items } = req.body;
+  const { name, items, visibility } = req.body;
   const createdList = await List.create({
-    name: name,
+    name,
     items,
     createdBy: req.user._id,
+    visibility
   });
   if (createdList) {
-    res.status(201).json({
-      _id: createdList._id,
-      name: createdList.name,
-      createdBy: createdList.createdBy,
-      visibility: createdList.visibility,
-      items: createdList.items,
-    });
+    res.status(201).json(createdList);
   } else {
     res.status(400);
     throw new Error("Invalid List data");
@@ -29,7 +24,10 @@ const createList = asyncHandler(async (req, res) => {
 const addListItem = asyncHandler(async (req, res) => {
   const { item } = req.body;
 
-  const list = await List.findById(req.params.listId);
+  // TODO: what if array of items?
+  // TODO: if item exists then return null
+  const list = await List.findById(req.params.id);
+  console.log("here", list)
   if (list) {
     list.items.push(item);
 
@@ -46,9 +44,9 @@ const addListItem = asyncHandler(async (req, res) => {
 const getLists = asyncHandler(async (req, res) => {
   const { userId } = req.query;
 
-  let filter = {};
+  let filter = { visibility: "PUBLIC" };
   if (contentId !== undefined) {
-    filter = { userId };
+    filter.userId = userId;
   }
 
   const lists = await List.find({ filter });
@@ -56,7 +54,8 @@ const getLists = asyncHandler(async (req, res) => {
 });
 
 const getListById = asyncHandler(async (req, res) => {
-  const list = await List.find({ _id: req.params.id });
+  // TODO: check if user is creator, if not and if private, throw error
+  const list = await List.findById(req.params.listId);
   res.json(list);
 });
 

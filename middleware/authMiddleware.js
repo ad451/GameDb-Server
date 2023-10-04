@@ -43,8 +43,9 @@ const admin = (req, res, next) => {
 
 const verifyCreator = (Model) => {
   return async (req, res, next) => {
-    const reply = await Model.findById(req.params.id);
-    if (reply.author.toString() === req.user._id.toString()) next();
+    const doc = await Model.findById(req.params.id);
+    // TODO: add a field to req to avoid lookup of the doc again in the future
+    if (doc.createdBy.toString() === req.user._id.toString()) next();
     else {
       res.status(403);
       throw new Error(

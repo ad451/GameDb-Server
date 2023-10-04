@@ -5,7 +5,7 @@ const replySchema = mongoose.Schema(
     body: { type: String, required: true },
     level: { type: Number, min: 0, max: 1 }, // 0 if base reply. 1 if nested reply
     contentId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     createdAt: {
       type: Date,
       default: Date.now,
