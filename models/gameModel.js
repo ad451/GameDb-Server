@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const result= require("../data/rawg1.js");
 
 const gameSchema = mongoose.Schema({
   id: {
@@ -123,7 +122,7 @@ const gameSchema = mongoose.Schema({
   ],
 });
 
-const Game = mongoose.model("game", gameSchema);
+const Game = mongoose.model("Game", gameSchema);
 
 // const insertGames = async () => {
 //   try {
