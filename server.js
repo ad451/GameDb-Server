@@ -24,8 +24,8 @@ app.use(express.json());
 app.use("/api/v1/Games", gameRouter);
 app.use("/api/v1/Users", userRouter);
 app.use("/api/v1/Lists", ListRouter);
-app.use("/api/v1/reply", replyRouter);
-app.use("/api/v1/review", reviewRouter);
+app.use("/api/v1/Reply", replyRouter);
+app.use("/api/v1/Review", reviewRouter);
 
 
 

@@ -6,6 +6,8 @@ const {
   patchReview,
   deleteReview,
 } = require("../controllers/reviewController.js");
+const {upvoteReply,downvoteReply} = require("../controllers/voteController.js")
+
 const { protect, verifyCreator } = require("../middleware/authMiddleware.js");
 const Review = require("../models/reviewModel");
 const reviewRouter = express.Router();
@@ -17,6 +19,9 @@ const reviewRouter = express.Router();
 // 4. Delete a review
 
 reviewRouter.route("/").get(getReviews).post(protect, postReview);
+
+reviewRouter.route("/:id/upvote").patch(protect,upvoteReply(Review))
+reviewRouter.route("/:id/downvote").patch(protect,downvoteReply(Review))
 reviewRouter
   .route("/:id")
   .get(getReviewById)

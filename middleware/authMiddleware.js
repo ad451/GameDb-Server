@@ -44,8 +44,6 @@ const admin = (req, res, next) => {
 const verifyCreator = (Model) => {
   return async (req, res, next) => {
     const reply = await Model.findById(req.params.id);
-    console.log(reply.author === req.user._id);
-    console.log(req.user._id);
     if (reply.author.toString() === req.user._id.toString()) next();
     else {
       res.status(403);

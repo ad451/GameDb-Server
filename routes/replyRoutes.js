@@ -7,6 +7,8 @@ const {
   getReplyThread,
   deleteReply,
 } = require("../controllers/replyController.js");
+
+const {upvoteReply,downvoteReply} = require("../controllers/voteController.js")
 const { protect, verifyCreator } = require("../middleware/authMiddleware.js");
 const Reply = require("../models/replymodel");
 const replyRouter = express.Router();
@@ -18,6 +20,9 @@ const replyRouter = express.Router();
 // 4. view all replies to a reply
 
 replyRouter.route("/").get(getReplies).post(protect, postReply);
+replyRouter.route("/:id/upvote").patch(protect,upvoteReply(Reply))
+replyRouter.route("/:id/downvote").patch(protect,downvoteReply(Reply))
+
 replyRouter
   .route("/:id")
   .get(getReplyById)
