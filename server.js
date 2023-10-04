@@ -4,7 +4,7 @@ const connectDB = require("./config/db.js");
 // Routes
 const gameRouter = require("./routes/gameRoutes.js");
 const userRouter = require("./routes/userRoutes.js");
-const favouriteRouter = require("./routes/favouriteRoutes.js");
+const ListRouter = require("./routes/ListsRoutes.js");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware.js");
 const path = require("path");
 const dotenv = require("dotenv");
@@ -19,22 +19,11 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use(express.json());
-app.use("/api/v1/games", gameRouter);
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/favourites", favouriteRouter);
+app.use("/api/v1/Games", gameRouter);
+app.use("/api/v1/Users", userRouter);
+app.use("/api/v1/Lists", ListRouter);
 
 
-if (process.env.NODE_ENV === "production") {
-  console.log(1)
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running....");
-  });
-}
 
 app.use(notFound);
 app.use(errorHandler);
