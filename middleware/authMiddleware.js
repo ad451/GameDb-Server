@@ -33,13 +33,27 @@ const protect = asyncHandler(async (req, res, next) => {
 
 
 const admin = (req, res, next) => {
-
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.status(401);
+    res.status(403);
     throw new Error("Not authorized as an admin");
   }
 };
 
-module.exports = { protect, admin };
+const verifyCreator = (Model) => {
+  return async (req, res, next) => {
+    const reply = await Model.findById(req.params.id);
+    console.log(reply.author === req.user._id);
+    console.log(req.user._id);
+    if (reply.author.toString() === req.user._id.toString()) next();
+    else {
+      res.status(403);
+      throw new Error(
+        "You cannot change this reply as you are not its creator"
+      );
+    }
+  };
+};
+
+module.exports = { protect, admin, verifyCreator };

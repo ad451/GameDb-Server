@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const colors = require("colors");
 const dotenv = require("dotenv");
-const result= require("../data/rawg1.js");
 
 dotenv.config();
 
