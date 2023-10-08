@@ -36,12 +36,22 @@ const loginUserViaGoogle = asyncHandler(async (req, res) => {
     const profile = await googleOAuth.getProfileInfo(credential);
 
     let userDoc = await User.findOne({ email: profile.email });
+
+    if (userDoc.authProvider !== "GOOGLE_OAUTH") {
+      res.status(401);
+      res.send({
+        message:
+          "The email was already used once in email-password login method",
+      });
+      return;
+    }
+
     if (userDoc === null) {
       userDoc = await User.create({
         name: profile.name,
         email: profile.email,
         password: profile.sub,
-        authProvider: "GOOGLE_OAUTH"
+        authProvider: "GOOGLE_OAUTH",
       });
     }
 
@@ -67,8 +77,12 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    res.status(401);
+    res.send({
+      message:
+        "The email was already used once in Log in with Google method",
+    });
+    return;
   }
 
   const user = await User.create({
