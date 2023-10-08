@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken.js");
 const User = require("../models/userModel.js");
+const googleOAuth = require("../utils/googleOAuth");
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -9,6 +10,10 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
+  if (user.authProvider !== "GAMEDB_AUTH") {
+    res.status(401);
+    throw new Error("Incorrect Authentication provider");
+  }
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -21,6 +26,35 @@ const authUser = asyncHandler(async (req, res) => {
   } else {
     res.status(401);
     throw new Error("Invalid email or password");
+  }
+});
+
+const loginUserViaGoogle = asyncHandler(async (req, res) => {
+  try {
+    const credential = req.body.credential;
+
+    const profile = await googleOAuth.getProfileInfo(credential);
+
+    let userDoc = await User.findOne({ email: profile.email });
+    if (userDoc === null) {
+      userDoc = await User.create({
+        name: profile.name,
+        email: profile.email,
+        password: profile.sub,
+        authProvider: "GOOGLE_OAUTH"
+      });
+    }
+
+    res.send({
+      _id: userDoc._id,
+      name: userDoc.name,
+      email: userDoc.email,
+      isAdmin: userDoc.isAdmin,
+      token: generateToken(userDoc._id),
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(401).send();
   }
 });
 
@@ -41,6 +75,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    authProvider: "GAMEDB_AUTH",
   });
 
   if (user) {
@@ -177,4 +212,5 @@ module.exports = {
   deleteUser,
   getUserById,
   updateUser,
+  loginUserViaGoogle,
 };

@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    authProvider: {
+      type: String,
+      enum: ["GAMEDB_AUTH", "GOOGLE_OAUTH"]
+    }
   },
   {
     timestamps: true,
