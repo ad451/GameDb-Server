@@ -12,7 +12,11 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (user.authProvider !== "GAMEDB_AUTH") {
     res.status(401);
-    throw new Error("Incorrect Authentication provider");
+    res.send({
+      message:
+        "The email was already used once in Google Login method",
+    });
+    return;
   }
 
   if (user && (await user.matchPassword(password))) {
@@ -80,7 +84,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(401);
     res.send({
       message:
-        "The email was already used once in Log in with Google method",
+        "The given email is already in use",
     });
     return;
   }
