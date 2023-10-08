@@ -6,7 +6,7 @@ const userRouter = require("./routes/userRoutes.js");
 const ListRouter = require("./routes/ListsRoutes.js");
 const replyRouter = require("./routes/replyRoutes.js");
 const reviewRouter = require("./routes/reviewRoutes.js");
-
+const cors = require('cors');
 const { notFound, errorHandler } = require("./middleware/errorMiddleware.js");
 const path = require("path");
 const dotenv = require("dotenv");
@@ -19,7 +19,7 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-
+app.use(cors());
 app.use(express.json());
 app.use("/api/v1/Games", gameRouter);
 app.use("/api/v1/Users", userRouter);

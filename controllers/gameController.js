@@ -3,12 +3,12 @@ const getAllGames = async (req, res) => {
   const pageSize = 12;
   const page = Number(req.query.pageNumber) || 1;
   try {
-    console.log("Request has been made")
     const count = await Game.countDocuments();
 
     const games = await Game.find()
       .limit(pageSize)
       .skip(pageSize * (page - 1));
+
     res.json({ games, page, pages: Math.ceil(count / pageSize) });
   } catch (error) {
     console.log(`${error}`.red); // Fix: Use `error` instead of `Error`
