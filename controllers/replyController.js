@@ -31,7 +31,7 @@ const postReply = asyncHandler(async (req, res) => {
   const reply = new Reply({
     body,
     contentId,
-    author: req.user._id,
+    createdBy: req.user._id,
     parentId
   });
 

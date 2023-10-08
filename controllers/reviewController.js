@@ -32,7 +32,7 @@ const postReview = asyncHandler(async (req, res) => {
     title,
     body,
     contentId,
-    author: req.user._id,
+    createdBy: req.user._id,
     parentId
   });
 

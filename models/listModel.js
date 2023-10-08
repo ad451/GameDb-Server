@@ -5,9 +5,8 @@ const mongoose = require("mongoose");
 // }
 
 
-const ListSchema = mongoose.Schema(
+const listSchema = mongoose.Schema(
   {
-
     name : {
        type : String,
        required : true
@@ -15,7 +14,7 @@ const ListSchema = mongoose.Schema(
 
     createdBy: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
 
-    ListItems: [{
+    items: [{
       type: mongoose.Schema.Types.ObjectId,
       default : [],
       ref: "game",
@@ -30,11 +29,11 @@ const ListSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Lists = mongoose.model("Lists", ListSchema);
+const List = mongoose.model("List", listSchema);
 
 
 
-module.exports = Lists;
+module.exports = List;
 
 
 
