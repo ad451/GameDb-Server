@@ -13,8 +13,7 @@ const authUser = asyncHandler(async (req, res) => {
   if (user.authProvider !== "GAMEDB_AUTH") {
     res.status(401);
     res.send({
-      message:
-        "The email was already used once in Google Login method",
+      message: "The email was already used once in Google Login method",
     });
     return;
   }
@@ -53,6 +52,7 @@ const loginUserViaGoogle = asyncHandler(async (req, res) => {
     if (userDoc === null) {
       userDoc = await User.create({
         name: profile.name,
+        userName: profile.given_name,
         email: profile.email,
         password: profile.sub,
         authProvider: "GOOGLE_OAUTH",
@@ -64,6 +64,7 @@ const loginUserViaGoogle = asyncHandler(async (req, res) => {
       name: userDoc.name,
       email: userDoc.email,
       isAdmin: userDoc.isAdmin,
+      userName: userDoc.userName,
       token: generateToken(userDoc._id),
     });
   } catch (e) {
@@ -76,15 +77,14 @@ const loginUserViaGoogle = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, userName } = req.body;
 
   const userExists = await User.findOne({ email });
 
   if (userExists) {
     res.status(401);
     res.send({
-      message:
-        "The given email is already in use",
+      message: "The given email is already in use",
     });
     return;
   }
@@ -93,6 +93,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    userName,
     authProvider: "GAMEDB_AUTH",
   });
 
@@ -100,6 +101,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       _id: user._id,
       name: user.name,
+      userName: user.userName,
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
