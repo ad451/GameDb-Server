@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken.js");
 const User = require("../models/userModel.js");
+const googleOAuth = require("../utils/googleOAuth");
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -9,6 +10,13 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
+  if (user.authProvider !== "GAMEDB_AUTH") {
+    res.status(401);
+    res.send({
+      message: "The email was already used once in Google Login method",
+    });
+    return;
+  }
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -24,29 +32,76 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
+const loginUserViaGoogle = asyncHandler(async (req, res) => {
+  try {
+    const credential = req.body.credential;
+
+    const profile = await googleOAuth.getProfileInfo(credential);
+
+    let userDoc = await User.findOne({ email: profile.email });
+
+    if (userDoc.authProvider !== "GOOGLE_OAUTH") {
+      res.status(401);
+      res.send({
+        message:
+          "The email was already used once in email-password login method",
+      });
+      return;
+    }
+
+    if (userDoc === null) {
+      userDoc = await User.create({
+        name: profile.name,
+        userName: profile.given_name,
+        email: profile.email,
+        password: profile.sub,
+        authProvider: "GOOGLE_OAUTH",
+      });
+    }
+
+    res.send({
+      _id: userDoc._id,
+      name: userDoc.name,
+      email: userDoc.email,
+      isAdmin: userDoc.isAdmin,
+      userName: userDoc.userName,
+      token: generateToken(userDoc._id),
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(401).send();
+  }
+});
+
 // @desc    Register a new user
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, userName } = req.body;
 
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    res.status(401);
+    res.send({
+      message: "The given email is already in use",
+    });
+    return;
   }
 
   const user = await User.create({
     name,
     email,
     password,
+    userName,
+    authProvider: "GAMEDB_AUTH",
   });
 
   if (user) {
     res.status(201).json({
       _id: user._id,
       name: user.name,
+      userName: user.userName,
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
@@ -177,4 +232,5 @@ module.exports = {
   deleteUser,
   getUserById,
   updateUser,
+  loginUserViaGoogle,
 };
