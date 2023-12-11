@@ -1,6 +1,12 @@
+const { response } = require("express");
 const mongoose = require("mongoose");
+const fetch = require('node-fetch');
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const gameSchema = mongoose.Schema({
+  owner: String,
   id: {
     type: Number,
     required: true,
@@ -11,7 +17,8 @@ const gameSchema = mongoose.Schema({
   },
   released: {
     type: String,
-    required: true,
+    required: false,
+    default: null
   },
 
   background_image: {
@@ -124,17 +131,6 @@ const gameSchema = mongoose.Schema({
 
 const Game = mongoose.model("Game", gameSchema);
 
-// const insertGames = async () => {
-//   try {
-//     // Use await to insert the games into the database
-//     await Game.insertMany(result);
-//     console.log("Games inserted successfully.");
-//   } catch (err) {
-//     console.error("Error inserting games:", err);
- 
-// }
-// };
 
-// insertGames();
 
-module.exports = Game
+module.exports = Game;
