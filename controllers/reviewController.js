@@ -37,6 +37,7 @@ const postReview = asyncHandler(async (req, res) => {
   });
 
   const createdItem = await review.save();
+
   res.status(201).json(createdItem);
 });
 

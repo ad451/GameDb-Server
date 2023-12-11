@@ -28,14 +28,23 @@ const postReply = asyncHandler(async (req, res) => {
     parentId = req.query.parentId;
   }
 
+  console.log(parentId)
+
   const reply = new Reply({
     body,
     contentId,
     createdBy: req.user._id,
-    parentId
+    parentId,
   });
 
   const createdItem = await reply.save();
+
+  if (parentId !== null) {
+    const parentDoc = await Reply.findById(parentId);
+    parentDoc.replies = [...parentDoc.replies, createdItem._id];
+    parentDoc.save();
+  }
+
   res.status(201).json(createdItem);
 });
 
@@ -57,9 +66,7 @@ const getReplyThread = asyncHandler(async (req, res) => {
 });
 
 const deleteReply = asyncHandler(async (req, res) => {
-  const deletedReply = await Reply.findByIdAndDelete(
-    req.params.id,
-  );
+  const deletedReply = await Reply.findByIdAndDelete(req.params.id);
 
   res.json({ deletedReply });
 });
@@ -70,5 +77,5 @@ module.exports = {
   getReplyById,
   patchReply,
   getReplyThread,
-  deleteReply
+  deleteReply,
 };
