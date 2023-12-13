@@ -17,7 +17,7 @@ const listRouter = express.Router();
 listRouter.route("/").post(protect, createList).get(getLists);
 listRouter.route("/:id/").get(getListById);
 listRouter
-  .route("/:id/items").get(protect, verifyCreator(List),getListsGames)
+  .route("/:id/items").get(protect,getListsGames)
   .patch(protect, verifyCreator(List), addListItem)
   .delete(protect, verifyCreator(List), deleteListItem);
 
