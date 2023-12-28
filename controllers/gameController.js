@@ -24,4 +24,20 @@ const getGameById = async (req, res) => {
   }
 };
 
-module.exports = { getAllGames, getGameById };
+
+const getGameBySearch = async (req,res)=>{
+  try {
+    const searchTerm = req.query.term;
+    const limit = parseInt(req.query.limit) || 10;
+    const matchingGames = await Game.find({
+      name: { $regex: new RegExp(searchTerm, 'i') } 
+    }).limit(limit);
+    res.json(matchingGames);
+  } catch (error) {
+    console.error('Error searching games:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+}
+
+module.exports = { getAllGames, getGameById,getGameBySearch };

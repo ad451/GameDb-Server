@@ -55,12 +55,10 @@ const getLists = asyncHandler(async (req, res) => {
 const getListsGames = asyncHandler(async (req, res) => {
   const { gameIds } = req.query;
   const gameIdArray = gameIds.split(",");
-  console.log(gameIdArray);
 
   try {
     // Assuming you have a mongoose model named Game
     const games = await Game.find({ _id: { $in: gameIdArray } });
-    console.log(games)
     res.status(200).json({ success: true, data: games });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Server Error' });
