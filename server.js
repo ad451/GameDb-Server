@@ -20,6 +20,12 @@ if (process.env.NODE_ENV === "development") {
 }
 app.use(cors());
 app.use(express.json());
+
+app.use("/api", (req, res, next) => {
+  res.setHeader("Cache-Control", "s-max-age=1, state-while-revalidate")
+  next();
+})
+
 app.use("/api/v1/game", gameRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/list", listRouter);
